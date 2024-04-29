@@ -1,2 +1,3 @@
-# solgo-standards
-Ethereum (EIP/ERC) Standards Discovery Solgo Extension
+# SolGo Standards
+
+Ethereum (EIP/ERC) and OpenZeppelin Standards Discovery Solgo Extension
