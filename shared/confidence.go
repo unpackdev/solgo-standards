@@ -1,4 +1,4 @@
-package utils
+package shared
 
 import eip_pb "github.com/unpackdev/protos/dist/go/eip"
 

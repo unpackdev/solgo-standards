@@ -1,7 +1,7 @@
 package standards
 
 import (
-	"github.com/unpackdev/standards/utils"
+	"github.com/unpackdev/standards/shared"
 	"reflect"
 	"testing"
 
@@ -18,19 +18,19 @@ func TestEIPStorage(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, s)
 
-	unknown := utils.Standard("NOT_DEFINED_YET")
+	unknown := shared.Standard("NOT_DEFINED_YET")
 	assert.Equal(t, unknown.ToProto(), eip_pb.Standard_UNKNOWN)
 
 	tests := []struct {
 		name           string
-		standard       EIP
+		standard       shared.EIP
 		expectedExists bool
 		isStagnant     bool
 		expectedError  string
 	}{
 		{
 			name: "Test ERC20",
-			standard: func() EIP {
+			standard: func() shared.EIP {
 				standard, err := GetContractByStandard(ERC20)
 				assert.NoError(t, err)
 				assert.NotNil(t, standard)
@@ -41,7 +41,7 @@ func TestEIPStorage(t *testing.T) {
 		},
 		{
 			name: "Test ERC721",
-			standard: func() EIP {
+			standard: func() shared.EIP {
 				standard, err := GetContractByStandard(ERC721)
 				assert.NoError(t, err)
 				assert.NotNil(t, standard)
@@ -52,7 +52,7 @@ func TestEIPStorage(t *testing.T) {
 		},
 		{
 			name: "Test ERC1155",
-			standard: func() EIP {
+			standard: func() shared.EIP {
 				standard, err := GetContractByStandard(ERC1155)
 				assert.NoError(t, err)
 				assert.NotNil(t, standard)
@@ -63,7 +63,7 @@ func TestEIPStorage(t *testing.T) {
 		},
 		{
 			name: "Test ERC1820",
-			standard: func() EIP {
+			standard: func() shared.EIP {
 				standard, err := GetContractByStandard(ERC1820)
 				assert.NoError(t, err)
 				assert.NotNil(t, standard)
@@ -74,7 +74,7 @@ func TestEIPStorage(t *testing.T) {
 		},
 		{
 			name: "Test ERC1822",
-			standard: func() EIP {
+			standard: func() shared.EIP {
 				standard, err := GetContractByStandard(ERC1822)
 				assert.NoError(t, err)
 				assert.NotNil(t, standard)
@@ -86,7 +86,7 @@ func TestEIPStorage(t *testing.T) {
 		},
 		{
 			name: "Test ERC1967",
-			standard: func() EIP {
+			standard: func() shared.EIP {
 				standard, err := GetContractByStandard(ERC1967)
 				assert.NoError(t, err)
 				assert.NotNil(t, standard)
@@ -100,7 +100,7 @@ func TestEIPStorage(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Check if all methods of the EIP interface are implemented
-			eipType := reflect.TypeOf((*EIP)(nil)).Elem()
+			eipType := reflect.TypeOf((*shared.EIP)(nil)).Elem()
 			assert.True(t, reflect.TypeOf(tt.standard).Implements(eipType), "EIP methods not fully implemented")
 
 			// Test GetName

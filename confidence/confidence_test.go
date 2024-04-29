@@ -1,7 +1,8 @@
-package standards
+package confidence
 
 import (
-	"github.com/unpackdev/standards/utils"
+	"github.com/unpackdev/standards"
+	"github.com/unpackdev/standards/shared"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,9 +16,9 @@ func TestEIPConfidenceDiscovery(t *testing.T) {
 		contracts  []struct {
 			name                 string
 			outputFile           string
-			contract             *utils.ContractMatcher
-			expectedLevel        utils.ConfidenceLevel
-			expectedThreshold    utils.ConfidenceThreshold
+			contract             *shared.ContractMatcher
+			expectedLevel        shared.ConfidenceLevel
+			expectedThreshold    shared.ConfidenceThreshold
 			standardTokenCount   int
 			discoveredTokenCount int
 			shouldMatch          bool
@@ -28,8 +29,8 @@ func TestEIPConfidenceDiscovery(t *testing.T) {
 	}{
 		{
 			name: "Test ERC20",
-			standard: func() EIP {
-				standard, err := GetContractByStandard(ERC20)
+			standard: func() standards.EIP {
+				standard, err := standards.GetContractByStandard(standards.ERC20)
 				assert.NoError(t, err)
 				assert.NotNil(t, standard)
 				return standard
@@ -38,9 +39,9 @@ func TestEIPConfidenceDiscovery(t *testing.T) {
 			contracts: []struct {
 				name                 string
 				outputFile           string
-				contract             *utils.ContractMatcher
-				expectedLevel        utils.ConfidenceLevel
-				expectedThreshold    utils.ConfidenceThreshold
+				contract             *shared.ContractMatcher
+				expectedLevel        shared.ConfidenceLevel
+				expectedThreshold    shared.ConfidenceThreshold
 				standardTokenCount   int
 				discoveredTokenCount int
 				shouldMatch          bool
@@ -435,19 +436,19 @@ func TestEIPConfidenceDiscovery(t *testing.T) {
 
 					assert.NotNil(t, discovery.ToProto())
 
-					jsonDiscovery, err := utils.ToJSON(discovery)
+					jsonDiscovery, err := shared.ToJSON(discovery)
 					assert.NoError(t, err)
 					assert.NotNil(t, jsonDiscovery)
 
-					jsonPrettyDiscovery, err := utils.ToJSONPretty(discovery)
+					jsonPrettyDiscovery, err := shared.ToJSONPretty(discovery)
 					assert.NoError(t, err)
 					assert.NotNil(t, jsonPrettyDiscovery)
 
-					protoDiscovery, err := utils.ToProtoJSON(discovery)
+					protoDiscovery, err := shared.ToProtoJSON(discovery)
 					assert.NoError(t, err)
 					assert.NotNil(t, protoDiscovery)
 
-					protoPrettyDiscovery, err := utils.ToJSONPretty(discovery.ToProto())
+					protoPrettyDiscovery, err := shared.ToJSONPretty(discovery.ToProto())
 					assert.NoError(t, err)
 
 					// Assert that the JSON output matches the expected output
@@ -462,39 +463,39 @@ func TestEIPConfidenceDiscovery(t *testing.T) {
 func TestFunctionMatch(t *testing.T) {
 	tests := []struct {
 		name           string
-		newFn          *utils.Function
-		standardFn     utils.Function
-		contractFn     utils.Function
+		newFn          *shared.Function
+		standardFn     shared.Function
+		contractFn     shared.Function
 		expectedTokens int
 		expectedMatch  bool
 	}{
 		{
 			name: "Matching function",
-			newFn: &utils.Function{
+			newFn: &shared.Function{
 				Name: "transfer",
-				Inputs: []utils.Input{
-					{Type: utils.TypeAddress, Indexed: false, Matched: false},
-					{Type: utils.TypeUint256, Indexed: false, Matched: false},
+				Inputs: []shared.Input{
+					{Type: shared.TypeAddress, Indexed: false, Matched: false},
+					{Type: shared.TypeUint256, Indexed: false, Matched: false},
 				},
-				Outputs: []utils.Output{{Type: utils.TypeBool, Matched: false}},
+				Outputs: []shared.Output{{Type: shared.TypeBool, Matched: false}},
 				Matched: false,
 			},
-			standardFn: utils.Function{
+			standardFn: shared.Function{
 				Name: "transfer",
-				Inputs: []utils.Input{
-					{Type: utils.TypeAddress, Indexed: false, Matched: false},
-					{Type: utils.TypeUint256, Indexed: false, Matched: false},
+				Inputs: []shared.Input{
+					{Type: shared.TypeAddress, Indexed: false, Matched: false},
+					{Type: shared.TypeUint256, Indexed: false, Matched: false},
 				},
-				Outputs: []utils.Output{{Type: utils.TypeBool, Matched: false}},
+				Outputs: []shared.Output{{Type: shared.TypeBool, Matched: false}},
 				Matched: false,
 			},
-			contractFn: utils.Function{
+			contractFn: shared.Function{
 				Name: "transfer",
-				Inputs: []utils.Input{
-					{Type: utils.TypeAddress, Indexed: false, Matched: false},
-					{Type: utils.TypeUint256, Indexed: false, Matched: false},
+				Inputs: []shared.Input{
+					{Type: shared.TypeAddress, Indexed: false, Matched: false},
+					{Type: shared.TypeUint256, Indexed: false, Matched: false},
 				},
-				Outputs: []utils.Output{{Type: utils.TypeBool, Matched: false}},
+				Outputs: []shared.Output{{Type: shared.TypeBool, Matched: false}},
 				Matched: false,
 			},
 			expectedTokens: 9,
@@ -514,42 +515,42 @@ func TestFunctionMatch(t *testing.T) {
 func TestEventMatch(t *testing.T) {
 	tests := []struct {
 		name           string
-		newEvent       *utils.Event
-		standardEvent  utils.Event
-		contractEvent  utils.Event
+		newEvent       *shared.Event
+		standardEvent  shared.Event
+		contractEvent  shared.Event
 		expectedTokens int
 		expectedMatch  bool
 	}{
 		{
 			name: "Matching event",
-			newEvent: &utils.Event{
+			newEvent: &shared.Event{
 				Name: "Transfer",
-				Inputs: []utils.Input{
-					{Type: utils.TypeAddress, Indexed: true, Matched: false},
-					{Type: utils.TypeAddress, Indexed: true, Matched: false},
-					{Type: utils.TypeUint256, Indexed: false, Matched: false},
+				Inputs: []shared.Input{
+					{Type: shared.TypeAddress, Indexed: true, Matched: false},
+					{Type: shared.TypeAddress, Indexed: true, Matched: false},
+					{Type: shared.TypeUint256, Indexed: false, Matched: false},
 				},
-				Outputs: []utils.Output{},
+				Outputs: []shared.Output{},
 				Matched: false,
 			},
-			standardEvent: utils.Event{
+			standardEvent: shared.Event{
 				Name: "Transfer",
-				Inputs: []utils.Input{
-					{Type: utils.TypeAddress, Indexed: true, Matched: false},
-					{Type: utils.TypeAddress, Indexed: true, Matched: false},
-					{Type: utils.TypeUint256, Indexed: false, Matched: false},
+				Inputs: []shared.Input{
+					{Type: shared.TypeAddress, Indexed: true, Matched: false},
+					{Type: shared.TypeAddress, Indexed: true, Matched: false},
+					{Type: shared.TypeUint256, Indexed: false, Matched: false},
 				},
-				Outputs: []utils.Output{},
+				Outputs: []shared.Output{},
 				Matched: false,
 			},
-			contractEvent: utils.Event{
+			contractEvent: shared.Event{
 				Name: "Transfer",
-				Inputs: []utils.Input{
-					{Type: utils.TypeAddress, Indexed: true, Matched: false},
-					{Type: utils.TypeAddress, Indexed: true, Matched: true},
-					{Type: utils.TypeUint256, Indexed: false, Matched: false},
+				Inputs: []shared.Input{
+					{Type: shared.TypeAddress, Indexed: true, Matched: false},
+					{Type: shared.TypeAddress, Indexed: true, Matched: true},
+					{Type: shared.TypeUint256, Indexed: false, Matched: false},
 				},
-				Outputs: []utils.Output{},
+				Outputs: []shared.Output{},
 				Matched: false,
 			},
 			expectedTokens: 10,

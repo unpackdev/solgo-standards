@@ -1,25 +1,25 @@
 package standards
 
-import "github.com/unpackdev/standards/utils"
+import "github.com/unpackdev/standards/shared"
 
 // standards is a map that stores ContractStandard instances indexed by their Standard identifier.
-var standards = map[utils.Standard]utils.ContractStandard{
+var standards = map[shared.Standard]shared.ContractStandard{
 	ERC20: {
 		Name: "ERC-20 Token Standard",
 		Url:  "https://eips.ethereum.org/EIPS/eip-20",
 		Type: ERC20,
 		ABI:  `[{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}]`,
-		Functions: []utils.Function{
-			utils.NewFunction("totalSupply", nil, []utils.Output{{Type: utils.TypeUint256}}),
-			utils.NewFunction("balanceOf", []utils.Input{{Type: utils.TypeAddress}}, []utils.Output{{Type: utils.TypeUint256}}),
-			utils.NewFunction("transfer", []utils.Input{{Type: utils.TypeAddress}, {Type: utils.TypeUint256}}, []utils.Output{{Type: utils.TypeBool}}),
-			utils.NewFunction("transferFrom", []utils.Input{{Type: utils.TypeAddress}, {Type: utils.TypeAddress}, {Type: utils.TypeUint256}}, []utils.Output{{Type: utils.TypeBool}}),
-			utils.NewFunction("approve", []utils.Input{{Type: utils.TypeAddress}, {Type: utils.TypeUint256}}, []utils.Output{{Type: utils.TypeBool}}),
-			utils.NewFunction("allowance", []utils.Input{{Type: utils.TypeAddress}, {Type: utils.TypeAddress}}, []utils.Output{{Type: utils.TypeUint256}}),
+		Functions: []shared.Function{
+			shared.NewFunction("totalSupply", nil, []shared.Output{{Type: shared.TypeUint256}}),
+			shared.NewFunction("balanceOf", []shared.Input{{Type: shared.TypeAddress}}, []shared.Output{{Type: shared.TypeUint256}}),
+			shared.NewFunction("transfer", []shared.Input{{Type: shared.TypeAddress}, {Type: shared.TypeUint256}}, []shared.Output{{Type: shared.TypeBool}}),
+			shared.NewFunction("transferFrom", []shared.Input{{Type: shared.TypeAddress}, {Type: shared.TypeAddress}, {Type: shared.TypeUint256}}, []shared.Output{{Type: shared.TypeBool}}),
+			shared.NewFunction("approve", []shared.Input{{Type: shared.TypeAddress}, {Type: shared.TypeUint256}}, []shared.Output{{Type: shared.TypeBool}}),
+			shared.NewFunction("allowance", []shared.Input{{Type: shared.TypeAddress}, {Type: shared.TypeAddress}}, []shared.Output{{Type: shared.TypeUint256}}),
 		},
-		Events: []utils.Event{
-			utils.NewEvent("Transfer", []utils.Input{{Type: utils.TypeAddress, Indexed: true}, {Type: utils.TypeAddress, Indexed: true}, {Type: utils.TypeUint256}}, nil),
-			utils.NewEvent("Approval", []utils.Input{{Type: utils.TypeAddress, Indexed: true}, {Type: utils.TypeAddress, Indexed: true}, {Type: utils.TypeUint256}}, nil),
+		Events: []shared.Event{
+			shared.NewEvent("Transfer", []shared.Input{{Type: shared.TypeAddress, Indexed: true}, {Type: shared.TypeAddress, Indexed: true}, {Type: shared.TypeUint256}}, nil),
+			shared.NewEvent("Approval", []shared.Input{{Type: shared.TypeAddress, Indexed: true}, {Type: shared.TypeAddress, Indexed: true}, {Type: shared.TypeUint256}}, nil),
 		},
 	},
 	ERC721: {
@@ -27,22 +27,22 @@ var standards = map[utils.Standard]utils.ContractStandard{
 		Url:  "https://eips.ethereum.org/EIPS/eip-721",
 		Type: ERC721,
 		ABI:  `[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"balance","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"operator","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"owner","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"_approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"}]`,
-		Functions: []utils.Function{
-			utils.NewFunction("name", nil, []utils.Output{{Type: utils.TypeString}}),
-			utils.NewFunction("symbol", nil, []utils.Output{{Type: utils.TypeString}}),
-			utils.NewFunction("totalSupply", nil, []utils.Output{{Type: utils.TypeUint256}}),
-			utils.NewFunction("balanceOf", []utils.Input{{Type: utils.TypeAddress}}, []utils.Output{{Type: utils.TypeUint256}}),
-			utils.NewFunction("ownerOf", []utils.Input{{Type: utils.TypeUint256}}, []utils.Output{{Type: utils.TypeAddress}}),
-			utils.NewFunction("transferFrom", []utils.Input{{Type: utils.TypeAddress}, {Type: utils.TypeAddress}, {Type: utils.TypeUint256}}, nil),
-			utils.NewFunction("approve", []utils.Input{{Type: utils.TypeAddress}, {Type: utils.TypeUint256}}, nil),
-			utils.NewFunction("setApprovalForAll", []utils.Input{{Type: utils.TypeAddress}, {Type: utils.TypeBool}}, nil),
-			utils.NewFunction("getApproved", []utils.Input{{Type: utils.TypeUint256}}, []utils.Output{{Type: utils.TypeAddress}}),
-			utils.NewFunction("isApprovedForAll", []utils.Input{{Type: utils.TypeAddress}, {Type: utils.TypeAddress}}, []utils.Output{{Type: utils.TypeBool}}),
+		Functions: []shared.Function{
+			shared.NewFunction("name", nil, []shared.Output{{Type: shared.TypeString}}),
+			shared.NewFunction("symbol", nil, []shared.Output{{Type: shared.TypeString}}),
+			shared.NewFunction("totalSupply", nil, []shared.Output{{Type: shared.TypeUint256}}),
+			shared.NewFunction("balanceOf", []shared.Input{{Type: shared.TypeAddress}}, []shared.Output{{Type: shared.TypeUint256}}),
+			shared.NewFunction("ownerOf", []shared.Input{{Type: shared.TypeUint256}}, []shared.Output{{Type: shared.TypeAddress}}),
+			shared.NewFunction("transferFrom", []shared.Input{{Type: shared.TypeAddress}, {Type: shared.TypeAddress}, {Type: shared.TypeUint256}}, nil),
+			shared.NewFunction("approve", []shared.Input{{Type: shared.TypeAddress}, {Type: shared.TypeUint256}}, nil),
+			shared.NewFunction("setApprovalForAll", []shared.Input{{Type: shared.TypeAddress}, {Type: shared.TypeBool}}, nil),
+			shared.NewFunction("getApproved", []shared.Input{{Type: shared.TypeUint256}}, []shared.Output{{Type: shared.TypeAddress}}),
+			shared.NewFunction("isApprovedForAll", []shared.Input{{Type: shared.TypeAddress}, {Type: shared.TypeAddress}}, []shared.Output{{Type: shared.TypeBool}}),
 		},
-		Events: []utils.Event{
-			utils.NewEvent("Transfer", []utils.Input{{Type: utils.TypeAddress, Indexed: true}, {Type: utils.TypeAddress, Indexed: true}, {Type: utils.TypeUint256}}, nil),
-			utils.NewEvent("Approval", []utils.Input{{Type: utils.TypeAddress, Indexed: true}, {Type: utils.TypeAddress, Indexed: true}, {Type: utils.TypeUint256}}, nil),
-			utils.NewEvent("ApprovalForAll", []utils.Input{{Type: utils.TypeAddress, Indexed: true}, {Type: utils.TypeAddress, Indexed: true}, {Type: utils.TypeBool}}, nil),
+		Events: []shared.Event{
+			shared.NewEvent("Transfer", []shared.Input{{Type: shared.TypeAddress, Indexed: true}, {Type: shared.TypeAddress, Indexed: true}, {Type: shared.TypeUint256}}, nil),
+			shared.NewEvent("Approval", []shared.Input{{Type: shared.TypeAddress, Indexed: true}, {Type: shared.TypeAddress, Indexed: true}, {Type: shared.TypeUint256}}, nil),
+			shared.NewEvent("ApprovalForAll", []shared.Input{{Type: shared.TypeAddress, Indexed: true}, {Type: shared.TypeAddress, Indexed: true}, {Type: shared.TypeBool}}, nil),
 		},
 	},
 	/*	ERC1155: {

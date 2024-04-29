@@ -2,12 +2,12 @@ package standards
 
 import (
 	"fmt"
-	"github.com/unpackdev/standards/utils"
+	"github.com/unpackdev/standards/shared"
 	"sort"
 )
 
 // storage is a map that holds registered Ethereum standards.
-var storage map[utils.Standard]EIP
+var storage map[shared.Standard]shared.EIP
 
 // RegisterStandard registers a new Ethereum standard to the storage.
 // If the standard already exists, it returns an error.
@@ -18,7 +18,7 @@ var storage map[utils.Standard]EIP
 //
 // Returns:
 // - error: An error if the standard already exists, otherwise nil.
-func RegisterStandard(s utils.Standard, cs EIP) error {
+func RegisterStandard(s shared.Standard, cs shared.EIP) error {
 	if Exists(s) {
 		return fmt.Errorf("standard %s already exists", s)
 	}
@@ -35,7 +35,7 @@ func RegisterStandard(s utils.Standard, cs EIP) error {
 // Returns:
 // - ContractStandard: The details of the Ethereum standard if it exists.
 // - bool: A boolean indicating if the standard exists in the storage.
-func GetStandard(s utils.Standard) (EIP, bool) {
+func GetStandard(s shared.Standard) (shared.EIP, bool) {
 	cs, exists := storage[s]
 	return cs, exists
 }
@@ -47,7 +47,7 @@ func GetStandard(s utils.Standard) (EIP, bool) {
 //
 // Returns:
 // - bool: A boolean indicating if the standard exists in the storage.
-func Exists(s utils.Standard) bool {
+func Exists(s shared.Standard) bool {
 	_, exists := storage[s]
 	return exists
 }
@@ -56,14 +56,14 @@ func Exists(s utils.Standard) bool {
 //
 // Returns:
 // - map[Standard]ContractStandard: A map of all registered Ethereum standards.
-func GetRegisteredStandards() map[utils.Standard]EIP {
+func GetRegisteredStandards() map[shared.Standard]shared.EIP {
 	return storage
 }
 
 // GetSortedRegisteredStandards retrieves all the registered Ethereum standards from the storage in a sorted order.
-func GetSortedRegisteredStandards() []EIP {
+func GetSortedRegisteredStandards() []shared.EIP {
 	// Create a slice to hold all EIP values
-	var eips []EIP
+	var eips []shared.EIP
 	for _, eip := range storage {
 		eips = append(eips, eip)
 	}

@@ -1,14 +1,15 @@
-package standards
+package contracts
 
 import (
 	eip_pb "github.com/unpackdev/protos/dist/go/eip"
-	"github.com/unpackdev/standards/utils"
+	"github.com/unpackdev/standards/confidence"
+	"github.com/unpackdev/standards/shared"
 )
 
 // Contract represents the contract standard.
 type Contract struct {
 	// Standard holds the details of the contract standard.
-	Standard utils.ContractStandard
+	Standard shared.ContractStandard
 }
 
 // GetName returns the name of the standard.
@@ -17,7 +18,7 @@ func (e *Contract) GetName() string {
 }
 
 // GetType returns the type of the standard.
-func (e *Contract) GetType() utils.Standard {
+func (e *Contract) GetType() shared.Standard {
 	return e.Standard.Type
 }
 
@@ -27,17 +28,17 @@ func (e *Contract) GetUrl() string {
 }
 
 // GetFunctions returns the functions associated with the standard.
-func (e *Contract) GetFunctions() []utils.Function {
+func (e *Contract) GetFunctions() []shared.Function {
 	return e.Standard.Functions
 }
 
 // GetEvents returns the events associated with the standard.
-func (e *Contract) GetEvents() []utils.Event {
+func (e *Contract) GetEvents() []shared.Event {
 	return e.Standard.Events
 }
 
 // GetStandard returns the complete contract standard.
-func (e *Contract) GetStandard() utils.ContractStandard {
+func (e *Contract) GetStandard() shared.ContractStandard {
 	return e.Standard
 }
 
@@ -49,20 +50,20 @@ func (e *Contract) IsStagnant() bool {
 // ConfidenceCheck performs a general confidence check of the contract standard against a provided contract matcher.
 // It evaluates the entire contract standard to determine how closely it matches the criteria specified in the contract matcher.
 // This method returns a Discovery struct that details the overall matching confidence and a boolean indicating if a match was found.
-func (e *Contract) ConfidenceCheck(contract *utils.ContractMatcher) (utils.Discovery, bool) {
-	return ConfidenceCheck(e, contract)
+func (e *Contract) ConfidenceCheck(contract *shared.ContractMatcher) (shared.Discovery, bool) {
+	return confidence.ConfidenceCheck(e, contract)
 }
 
 // FunctionConfidenceCheck performs a confidence check on a specific function within the contract standard against a provided
 // function matcher. It assesses whether the function in question matches the criteria defined in the function matcher,
 // returning a FunctionDiscovery struct that details the matching confidence and a boolean indicating if a match was found.
-func (e *Contract) FunctionConfidenceCheck(fn *utils.Function) (utils.FunctionDiscovery, bool) {
-	return FunctionConfidenceCheck(e, fn)
+func (e *Contract) FunctionConfidenceCheck(fn *shared.Function) (shared.FunctionDiscovery, bool) {
+	return confidence.FunctionConfidenceCheck(e, fn)
 }
 
 // TokenCount returns the number of tokens associated with the standard.
 func (e *Contract) TokenCount() int {
-	return TokenCount(e.Standard)
+	return shared.TokenCount(e.Standard)
 }
 
 // FunctionTokenCount calculates the total number of tokens present in a given function of the contract standard.
@@ -72,7 +73,7 @@ func (e *Contract) TokenCount() int {
 func (e *Contract) FunctionTokenCount(fnName string) int {
 	for _, fn := range e.Standard.Functions {
 		if fn.Name == fnName {
-			return FunctionTokenCount(fn)
+			return shared.FunctionTokenCount(fn)
 		}
 	}
 	return 0
@@ -95,14 +96,6 @@ func (e *Contract) String() string {
 
 // NewContract initializes and returns an instance of the standard.
 // It sets up the standard with its name, type, associated functions, and events.
-func NewContract(standard utils.ContractStandard) EIP {
+func NewContract(standard shared.ContractStandard) shared.EIP {
 	return &Contract{Standard: standard}
-}
-
-// GetContractByStandard returns the contract standard by its type.
-func GetContractByStandard(standard utils.Standard) (EIP, error) {
-	if standard, ok := standards[standard]; ok {
-		return NewContract(standard), nil
-	}
-	return nil, ErrStandardNotFound
 }

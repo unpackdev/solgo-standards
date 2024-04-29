@@ -1,8 +1,7 @@
-package standards
+package shared
 
 import (
 	eip_pb "github.com/unpackdev/protos/dist/go/eip"
-	"github.com/unpackdev/standards/utils"
 )
 
 // EIP is an interface that defines the standard methods required for
@@ -12,11 +11,11 @@ type EIP interface {
 	GetName() string
 
 	// GetType returns the type of the Ethereum standard, e.g., ERC20 or ERC721.
-	GetType() utils.Standard
+	GetType() Standard
 
 	// GetFunctions returns a slice of Function structs, representing the
 	// functions defined in the Ethereum standard.
-	GetFunctions() []utils.Function
+	GetFunctions() []Function
 
 	// GetUrl returns the URL of the Ethereum standard.
 	GetUrl() string
@@ -26,18 +25,18 @@ type EIP interface {
 
 	// GetEvents returns a slice of Event structs, representing the
 	// events defined in the Ethereum standard.
-	GetEvents() []utils.Event
+	GetEvents() []Event
 
 	// GetStandard returns the complete representation of the Ethereum standard.
-	GetStandard() utils.ContractStandard
+	GetStandard() ContractStandard
 
 	// ConfidenceCheck returns a discovery confidence information and a boolean indicating whether
 	// the contract is to any level compliant with the Ethereum standard.
-	ConfidenceCheck(contract *utils.ContractMatcher) (utils.Discovery, bool)
+	ConfidenceCheck(contract *ContractMatcher) (Discovery, bool)
 
 	// FunctionConfidenceCheck returns a discovery confidence information and a boolean indicating whether
 	// the contract function is to any level compliant with the Ethereum standard.
-	FunctionConfidenceCheck(fn *utils.Function) (utils.FunctionDiscovery, bool)
+	FunctionConfidenceCheck(fn *Function) (FunctionDiscovery, bool)
 
 	// TokenCount returns the number of tokens associated with the Ethereum standard.
 	TokenCount() int

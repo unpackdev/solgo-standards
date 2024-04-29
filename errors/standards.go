@@ -1,4 +1,4 @@
-package standards
+package errors
 
 import "errors"
 

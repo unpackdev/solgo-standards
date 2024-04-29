@@ -1,37 +1,39 @@
-package standards
+package confidence
 
-import "github.com/unpackdev/standards/utils"
+import (
+	"github.com/unpackdev/standards/shared"
+)
 
 // CalculateDiscoveryConfidence calculates the confidence level and threshold based on the total confidence.
-func CalculateDiscoveryConfidence(totalConfidence float64) (utils.ConfidenceLevel, utils.ConfidenceThreshold) {
-	total := utils.ConfidenceThreshold(totalConfidence)
+func CalculateDiscoveryConfidence(totalConfidence float64) (shared.ConfidenceLevel, shared.ConfidenceThreshold) {
+	total := shared.ConfidenceThreshold(totalConfidence)
 	switch {
-	case total == utils.PerfectConfidenceThreshold:
-		return utils.PerfectConfidence, utils.PerfectConfidenceThreshold
-	case total >= utils.HighConfidenceThreshold:
-		return utils.HighConfidence, utils.HighConfidenceThreshold
-	case total >= utils.MediumConfidenceThreshold:
-		return utils.MediumConfidence, utils.MediumConfidenceThreshold
-	case total >= utils.LowConfidenceThreshold:
-		return utils.LowConfidence, utils.LowConfidenceThreshold
+	case total == shared.PerfectConfidenceThreshold:
+		return shared.PerfectConfidence, shared.PerfectConfidenceThreshold
+	case total >= shared.HighConfidenceThreshold:
+		return shared.HighConfidence, shared.HighConfidenceThreshold
+	case total >= shared.MediumConfidenceThreshold:
+		return shared.MediumConfidence, shared.MediumConfidenceThreshold
+	case total >= shared.LowConfidenceThreshold:
+		return shared.LowConfidence, shared.LowConfidenceThreshold
 	default:
-		return utils.NoConfidence, utils.NoConfidenceThreshold
+		return shared.NoConfidence, shared.NoConfidenceThreshold
 	}
 }
 
 // ConfidenceCheck checks the confidence of a contract against a standard EIP.
-func ConfidenceCheck(standard EIP, contract *utils.ContractMatcher) (utils.Discovery, bool) {
-	toReturn := utils.Discovery{
+func ConfidenceCheck(standard shared.EIP, contract *shared.ContractMatcher) (shared.Discovery, bool) {
+	toReturn := shared.Discovery{
 		Standard:         standard.GetType(),
-		Confidence:       utils.NoConfidence,
+		Confidence:       shared.NoConfidence,
 		ConfidencePoints: 0,
-		Threshold:        utils.NoConfidenceThreshold,
+		Threshold:        shared.NoConfidenceThreshold,
 		MaximumTokens:    standard.TokenCount(),
 		DiscoveredTokens: 0,
-		Contract: &utils.ContractMatcher{
+		Contract: &shared.ContractMatcher{
 			Name:      contract.Name,
-			Functions: make([]utils.Function, 0),
-			Events:    make([]utils.Event, 0),
+			Functions: make([]shared.Function, 0),
+			Events:    make([]shared.Event, 0),
 		},
 	}
 	foundTokenCount := 0
@@ -39,10 +41,10 @@ func ConfidenceCheck(standard EIP, contract *utils.ContractMatcher) (utils.Disco
 	discoveredEvents := map[string]bool{}
 
 	for _, standardFunction := range standard.GetFunctions() {
-		contractFn := utils.Function{
+		contractFn := shared.Function{
 			Name:    standardFunction.Name,
-			Inputs:  make([]utils.Input, 0),
-			Outputs: make([]utils.Output, 0),
+			Inputs:  make([]shared.Input, 0),
+			Outputs: make([]shared.Output, 0),
 		}
 
 		for _, contractFunction := range contract.Functions {
@@ -59,13 +61,13 @@ func ConfidenceCheck(standard EIP, contract *utils.ContractMatcher) (utils.Disco
 			contractFn.Matched = false
 
 			if standardFunction.Inputs == nil {
-				standardFunction.Inputs = make([]utils.Input, 0)
+				standardFunction.Inputs = make([]shared.Input, 0)
 			} else {
 				contractFn.Inputs = standardFunction.Inputs
 			}
 
 			if standardFunction.Outputs == nil {
-				standardFunction.Outputs = make([]utils.Output, 0)
+				standardFunction.Outputs = make([]shared.Output, 0)
 			} else {
 				contractFn.Outputs = standardFunction.Outputs
 			}
@@ -76,10 +78,10 @@ func ConfidenceCheck(standard EIP, contract *utils.ContractMatcher) (utils.Disco
 
 	for _, event := range standard.GetEvents() {
 
-		eventFn := utils.Event{
+		eventFn := shared.Event{
 			Name:    event.Name,
-			Inputs:  make([]utils.Input, 0),
-			Outputs: make([]utils.Output, 0),
+			Inputs:  make([]shared.Input, 0),
+			Outputs: make([]shared.Output, 0),
 		}
 
 		for _, contractEvent := range contract.Events {
@@ -96,13 +98,13 @@ func ConfidenceCheck(standard EIP, contract *utils.ContractMatcher) (utils.Disco
 			eventFn.Matched = false
 
 			if event.Inputs == nil {
-				event.Inputs = make([]utils.Input, 0)
+				event.Inputs = make([]shared.Input, 0)
 			} else {
 				eventFn.Inputs = event.Inputs
 			}
 
 			if event.Outputs == nil {
-				event.Outputs = make([]utils.Output, 0)
+				event.Outputs = make([]shared.Output, 0)
 			} else {
 				eventFn.Outputs = event.Outputs
 			}
@@ -124,18 +126,18 @@ func ConfidenceCheck(standard EIP, contract *utils.ContractMatcher) (utils.Disco
 }
 
 // FunctionConfidenceCheck checks for function confidence against provided EIP standard
-func FunctionConfidenceCheck(standard EIP, fn *utils.Function) (utils.FunctionDiscovery, bool) {
+func FunctionConfidenceCheck(standard shared.EIP, fn *shared.Function) (shared.FunctionDiscovery, bool) {
 	foundTokenCount := 0
 	maximumTokens := standard.FunctionTokenCount(fn.Name)
 
-	toReturn := utils.FunctionDiscovery{
+	toReturn := shared.FunctionDiscovery{
 		Standard:         standard.GetType(),
-		Confidence:       utils.NoConfidence,
+		Confidence:       shared.NoConfidence,
 		ConfidencePoints: 0,
-		Threshold:        utils.NoConfidenceThreshold,
+		Threshold:        shared.NoConfidenceThreshold,
 		MaximumTokens:    maximumTokens,
 		DiscoveredTokens: 0,
-		Function: &utils.Function{
+		Function: &shared.Function{
 			Name: fn.Name,
 		},
 	}
@@ -161,13 +163,13 @@ func FunctionConfidenceCheck(standard EIP, fn *utils.Function) (utils.FunctionDi
 }
 
 // FunctionMatch matches a function from a contract to a standard function and returns the total token count and a boolean indicating if a match was found.
-func FunctionMatch(newFn *utils.Function, standardFunction, contractFunction utils.Function) (int, bool) {
+func FunctionMatch(newFn *shared.Function, standardFunction, contractFunction shared.Function) (int, bool) {
 	totalTokenCount := 0
 	newFn.Name = contractFunction.Name
 	if standardFunction.Name == contractFunction.Name {
 		totalTokenCount++
 		for _, sfnInput := range standardFunction.Inputs {
-			newInput := utils.Input{Type: sfnInput.Type, Indexed: sfnInput.Indexed}
+			newInput := shared.Input{Type: sfnInput.Type, Indexed: sfnInput.Indexed}
 			for _, fnInput := range contractFunction.Inputs {
 				if standardInput, matched := InputMatch(standardFunction.Inputs, fnInput); matched {
 					totalTokenCount += 2 // Counting the input match and type match...
@@ -182,7 +184,7 @@ func FunctionMatch(newFn *utils.Function, standardFunction, contractFunction uti
 		}
 
 		for _, sfnOutput := range standardFunction.Outputs {
-			newOutput := utils.Output{Type: sfnOutput.Type}
+			newOutput := shared.Output{Type: sfnOutput.Type}
 			for range standardFunction.Outputs {
 				for _, fnOutput := range contractFunction.Outputs {
 					if _, matched := OutputMatch(standardFunction.Outputs, fnOutput); matched {
@@ -200,14 +202,14 @@ func FunctionMatch(newFn *utils.Function, standardFunction, contractFunction uti
 }
 
 // EventMatch matches an event from a contract to a standard event and returns the total token count and a boolean indicating if a match was found.
-func EventMatch(newEvent *utils.Event, standardEvent, event utils.Event) (int, bool) {
+func EventMatch(newEvent *shared.Event, standardEvent, event shared.Event) (int, bool) {
 	totalTokenCount := 0
 
 	if standardEvent.Name == event.Name {
 		totalTokenCount++
 		newEvent.Name = event.Name
 		for _, seInput := range standardEvent.Inputs {
-			newInput := utils.Input{Type: seInput.Type, Indexed: seInput.Indexed}
+			newInput := shared.Input{Type: seInput.Type, Indexed: seInput.Indexed}
 			for _, eventInput := range event.Inputs {
 				if standardInput, matched := InputMatch(standardEvent.Inputs, eventInput); matched {
 					totalTokenCount += 2 // Counting the input match and type match...
@@ -222,7 +224,7 @@ func EventMatch(newEvent *utils.Event, standardEvent, event utils.Event) (int, b
 		}
 
 		for _, seOutput := range standardEvent.Outputs {
-			newOutput := utils.Output{Type: seOutput.Type}
+			newOutput := shared.Output{Type: seOutput.Type}
 			for range event.Outputs {
 				for _, fnOutput := range event.Outputs {
 					if _, matched := OutputMatch(standardEvent.Outputs, fnOutput); matched {
@@ -240,7 +242,7 @@ func EventMatch(newEvent *utils.Event, standardEvent, event utils.Event) (int, b
 }
 
 // InputMatch matches an input to a list of inputs and returns the matched input and a boolean indicating if a match was found.
-func InputMatch(inputs []utils.Input, nodeInput utils.Input) (*utils.Input, bool) {
+func InputMatch(inputs []shared.Input, nodeInput shared.Input) (*shared.Input, bool) {
 	for _, input := range inputs {
 		if input.Type == nodeInput.Type {
 			return &input, true
@@ -251,7 +253,7 @@ func InputMatch(inputs []utils.Input, nodeInput utils.Input) (*utils.Input, bool
 }
 
 // OutputMatch matches an output to a list of outputs and returns the matched output and a boolean indicating if a match was found.
-func OutputMatch(outputs []utils.Output, nodeOutput utils.Output) (*utils.Output, bool) {
+func OutputMatch(outputs []shared.Output, nodeOutput shared.Output) (*shared.Output, bool) {
 	for _, output := range outputs {
 		if output.Type == nodeOutput.Type {
 			return &output, true
