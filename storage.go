@@ -2,11 +2,12 @@ package standards
 
 import (
 	"fmt"
+	"github.com/unpackdev/standards/utils"
 	"sort"
 )
 
 // storage is a map that holds registered Ethereum standards.
-var storage map[Standard]EIP
+var storage map[utils.Standard]EIP
 
 // RegisterStandard registers a new Ethereum standard to the storage.
 // If the standard already exists, it returns an error.
@@ -17,7 +18,7 @@ var storage map[Standard]EIP
 //
 // Returns:
 // - error: An error if the standard already exists, otherwise nil.
-func RegisterStandard(s Standard, cs EIP) error {
+func RegisterStandard(s utils.Standard, cs EIP) error {
 	if Exists(s) {
 		return fmt.Errorf("standard %s already exists", s)
 	}
@@ -34,7 +35,7 @@ func RegisterStandard(s Standard, cs EIP) error {
 // Returns:
 // - ContractStandard: The details of the Ethereum standard if it exists.
 // - bool: A boolean indicating if the standard exists in the storage.
-func GetStandard(s Standard) (EIP, bool) {
+func GetStandard(s utils.Standard) (EIP, bool) {
 	cs, exists := storage[s]
 	return cs, exists
 }
@@ -46,7 +47,7 @@ func GetStandard(s Standard) (EIP, bool) {
 //
 // Returns:
 // - bool: A boolean indicating if the standard exists in the storage.
-func Exists(s Standard) bool {
+func Exists(s utils.Standard) bool {
 	_, exists := storage[s]
 	return exists
 }
@@ -55,7 +56,7 @@ func Exists(s Standard) bool {
 //
 // Returns:
 // - map[Standard]ContractStandard: A map of all registered Ethereum standards.
-func GetRegisteredStandards() map[Standard]EIP {
+func GetRegisteredStandards() map[utils.Standard]EIP {
 	return storage
 }
 

@@ -1,6 +1,7 @@
 package standards
 
 import (
+	"github.com/unpackdev/standards/utils"
 	"reflect"
 	"testing"
 
@@ -13,11 +14,11 @@ func TestEIPStorage(t *testing.T) {
 	assert.NoError(t, LoadStandards())
 
 	// Test non existing yet standard...
-	s, err := GetContractByStandard(Standard("CORRUPTED"))
+	s, err := GetContractByStandard("CORRUPTED")
 	assert.Error(t, err)
 	assert.Nil(t, s)
 
-	unknown := Standard("NOT_DEFINED_YET")
+	unknown := utils.Standard("NOT_DEFINED_YET")
 	assert.Equal(t, unknown.ToProto(), eip_pb.Standard_UNKNOWN)
 
 	tests := []struct {

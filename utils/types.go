@@ -1,8 +1,6 @@
-package standards
+package utils
 
-import (
-	eip_pb "github.com/unpackdev/protos/dist/go/eip"
-)
+import eip_pb "github.com/unpackdev/protos/dist/go/eip"
 
 // Constants representing common Ethereum data types.
 const (

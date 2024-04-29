@@ -1,105 +1,37 @@
 package standards
 
-import (
-	eip_pb "github.com/unpackdev/protos/dist/go/eip"
-)
-
-// ConfidenceLevel represents the confidence level of a discovery.
-type ConfidenceLevel int
-
-// String returns the string representation of the confidence level.
-func (c ConfidenceLevel) String() string {
-	switch c {
-	case PerfectConfidence:
-		return "perfect"
-	case HighConfidence:
-		return "high"
-	case MediumConfidence:
-		return "medium"
-	case LowConfidence:
-		return "low"
-	case NoConfidence:
-		return "no_confidence"
-	default:
-		return "unknown"
-	}
-}
-
-// ToProto converts a ConfidenceLevel to its protobuf representation.
-func (c ConfidenceLevel) ToProto() eip_pb.ConfidenceLevel {
-	return eip_pb.ConfidenceLevel(c)
-}
-
-// ConfidenceThreshold represents the threshold value for a confidence level.
-type ConfidenceThreshold float64
-
-// ToProto converts a ConfidenceThreshold to its protobuf representation.
-func (c ConfidenceThreshold) ToProto() eip_pb.ConfidenceThreshold {
-	return eip_pb.ConfidenceThreshold(c)
-}
-
-const (
-	// PerfectConfidenceThreshold represents a perfect confidence threshold value.
-	PerfectConfidenceThreshold ConfidenceThreshold = 1.0
-
-	// HighConfidenceThreshold represents a high confidence threshold value.
-	HighConfidenceThreshold ConfidenceThreshold = 0.9
-
-	// MediumConfidenceThreshold represents a medium confidence threshold value.
-	MediumConfidenceThreshold ConfidenceThreshold = 0.5
-
-	// LowConfidenceThreshold represents a low confidence threshold value.
-	LowConfidenceThreshold ConfidenceThreshold = 0.1
-
-	// NoConfidenceThreshold represents no confidence threshold value.
-	NoConfidenceThreshold ConfidenceThreshold = 0.0
-
-	// PerfectConfidence represents a perfect confidence level.
-	PerfectConfidence ConfidenceLevel = 4
-
-	// HighConfidence represents a high confidence level.
-	HighConfidence ConfidenceLevel = 3
-
-	// MediumConfidence represents a medium confidence level.
-	MediumConfidence ConfidenceLevel = 2
-
-	// LowConfidence represents a low confidence level.
-	LowConfidence ConfidenceLevel = 1
-
-	// NoConfidence represents no confidence level.
-	NoConfidence ConfidenceLevel = 0
-)
+import "github.com/unpackdev/standards/utils"
 
 // CalculateDiscoveryConfidence calculates the confidence level and threshold based on the total confidence.
-func CalculateDiscoveryConfidence(totalConfidence float64) (ConfidenceLevel, ConfidenceThreshold) {
-	total := ConfidenceThreshold(totalConfidence)
+func CalculateDiscoveryConfidence(totalConfidence float64) (utils.ConfidenceLevel, utils.ConfidenceThreshold) {
+	total := utils.ConfidenceThreshold(totalConfidence)
 	switch {
-	case total == PerfectConfidenceThreshold:
-		return PerfectConfidence, PerfectConfidenceThreshold
-	case total >= HighConfidenceThreshold:
-		return HighConfidence, HighConfidenceThreshold
-	case total >= MediumConfidenceThreshold:
-		return MediumConfidence, MediumConfidenceThreshold
-	case total >= LowConfidenceThreshold:
-		return LowConfidence, LowConfidenceThreshold
+	case total == utils.PerfectConfidenceThreshold:
+		return utils.PerfectConfidence, utils.PerfectConfidenceThreshold
+	case total >= utils.HighConfidenceThreshold:
+		return utils.HighConfidence, utils.HighConfidenceThreshold
+	case total >= utils.MediumConfidenceThreshold:
+		return utils.MediumConfidence, utils.MediumConfidenceThreshold
+	case total >= utils.LowConfidenceThreshold:
+		return utils.LowConfidence, utils.LowConfidenceThreshold
 	default:
-		return NoConfidence, NoConfidenceThreshold
+		return utils.NoConfidence, utils.NoConfidenceThreshold
 	}
 }
 
 // ConfidenceCheck checks the confidence of a contract against a standard EIP.
-func ConfidenceCheck(standard EIP, contract *ContractMatcher) (Discovery, bool) {
-	toReturn := Discovery{
+func ConfidenceCheck(standard EIP, contract *utils.ContractMatcher) (utils.Discovery, bool) {
+	toReturn := utils.Discovery{
 		Standard:         standard.GetType(),
-		Confidence:       NoConfidence,
+		Confidence:       utils.NoConfidence,
 		ConfidencePoints: 0,
-		Threshold:        NoConfidenceThreshold,
+		Threshold:        utils.NoConfidenceThreshold,
 		MaximumTokens:    standard.TokenCount(),
 		DiscoveredTokens: 0,
-		Contract: &ContractMatcher{
+		Contract: &utils.ContractMatcher{
 			Name:      contract.Name,
-			Functions: make([]Function, 0),
-			Events:    make([]Event, 0),
+			Functions: make([]utils.Function, 0),
+			Events:    make([]utils.Event, 0),
 		},
 	}
 	foundTokenCount := 0
@@ -107,10 +39,10 @@ func ConfidenceCheck(standard EIP, contract *ContractMatcher) (Discovery, bool) 
 	discoveredEvents := map[string]bool{}
 
 	for _, standardFunction := range standard.GetFunctions() {
-		contractFn := Function{
+		contractFn := utils.Function{
 			Name:    standardFunction.Name,
-			Inputs:  make([]Input, 0),
-			Outputs: make([]Output, 0),
+			Inputs:  make([]utils.Input, 0),
+			Outputs: make([]utils.Output, 0),
 		}
 
 		for _, contractFunction := range contract.Functions {
@@ -127,13 +59,13 @@ func ConfidenceCheck(standard EIP, contract *ContractMatcher) (Discovery, bool) 
 			contractFn.Matched = false
 
 			if standardFunction.Inputs == nil {
-				standardFunction.Inputs = make([]Input, 0)
+				standardFunction.Inputs = make([]utils.Input, 0)
 			} else {
 				contractFn.Inputs = standardFunction.Inputs
 			}
 
 			if standardFunction.Outputs == nil {
-				standardFunction.Outputs = make([]Output, 0)
+				standardFunction.Outputs = make([]utils.Output, 0)
 			} else {
 				contractFn.Outputs = standardFunction.Outputs
 			}
@@ -144,10 +76,10 @@ func ConfidenceCheck(standard EIP, contract *ContractMatcher) (Discovery, bool) 
 
 	for _, event := range standard.GetEvents() {
 
-		eventFn := Event{
+		eventFn := utils.Event{
 			Name:    event.Name,
-			Inputs:  make([]Input, 0),
-			Outputs: make([]Output, 0),
+			Inputs:  make([]utils.Input, 0),
+			Outputs: make([]utils.Output, 0),
 		}
 
 		for _, contractEvent := range contract.Events {
@@ -164,13 +96,13 @@ func ConfidenceCheck(standard EIP, contract *ContractMatcher) (Discovery, bool) 
 			eventFn.Matched = false
 
 			if event.Inputs == nil {
-				event.Inputs = make([]Input, 0)
+				event.Inputs = make([]utils.Input, 0)
 			} else {
 				eventFn.Inputs = event.Inputs
 			}
 
 			if event.Outputs == nil {
-				event.Outputs = make([]Output, 0)
+				event.Outputs = make([]utils.Output, 0)
 			} else {
 				eventFn.Outputs = event.Outputs
 			}
@@ -192,18 +124,18 @@ func ConfidenceCheck(standard EIP, contract *ContractMatcher) (Discovery, bool) 
 }
 
 // FunctionConfidenceCheck checks for function confidence against provided EIP standard
-func FunctionConfidenceCheck(standard EIP, fn *Function) (FunctionDiscovery, bool) {
+func FunctionConfidenceCheck(standard EIP, fn *utils.Function) (utils.FunctionDiscovery, bool) {
 	foundTokenCount := 0
 	maximumTokens := standard.FunctionTokenCount(fn.Name)
 
-	toReturn := FunctionDiscovery{
+	toReturn := utils.FunctionDiscovery{
 		Standard:         standard.GetType(),
-		Confidence:       NoConfidence,
+		Confidence:       utils.NoConfidence,
 		ConfidencePoints: 0,
-		Threshold:        NoConfidenceThreshold,
+		Threshold:        utils.NoConfidenceThreshold,
 		MaximumTokens:    maximumTokens,
 		DiscoveredTokens: 0,
-		Function: &Function{
+		Function: &utils.Function{
 			Name: fn.Name,
 		},
 	}
@@ -229,13 +161,13 @@ func FunctionConfidenceCheck(standard EIP, fn *Function) (FunctionDiscovery, boo
 }
 
 // FunctionMatch matches a function from a contract to a standard function and returns the total token count and a boolean indicating if a match was found.
-func FunctionMatch(newFn *Function, standardFunction, contractFunction Function) (int, bool) {
+func FunctionMatch(newFn *utils.Function, standardFunction, contractFunction utils.Function) (int, bool) {
 	totalTokenCount := 0
 	newFn.Name = contractFunction.Name
 	if standardFunction.Name == contractFunction.Name {
 		totalTokenCount++
 		for _, sfnInput := range standardFunction.Inputs {
-			newInput := Input{Type: sfnInput.Type, Indexed: sfnInput.Indexed}
+			newInput := utils.Input{Type: sfnInput.Type, Indexed: sfnInput.Indexed}
 			for _, fnInput := range contractFunction.Inputs {
 				if standardInput, matched := inputMatch(standardFunction.Inputs, fnInput); matched {
 					totalTokenCount += 2 // Counting the input match and type match...
@@ -250,7 +182,7 @@ func FunctionMatch(newFn *Function, standardFunction, contractFunction Function)
 		}
 
 		for _, sfnOutput := range standardFunction.Outputs {
-			newOutput := Output{Type: sfnOutput.Type}
+			newOutput := utils.Output{Type: sfnOutput.Type}
 			for range standardFunction.Outputs {
 				for _, fnOutput := range contractFunction.Outputs {
 					if _, matched := outputMatch(standardFunction.Outputs, fnOutput); matched {
@@ -268,14 +200,14 @@ func FunctionMatch(newFn *Function, standardFunction, contractFunction Function)
 }
 
 // EventMatch matches an event from a contract to a standard event and returns the total token count and a boolean indicating if a match was found.
-func EventMatch(newEvent *Event, standardEvent, event Event) (int, bool) {
+func EventMatch(newEvent *utils.Event, standardEvent, event utils.Event) (int, bool) {
 	totalTokenCount := 0
 
 	if standardEvent.Name == event.Name {
 		totalTokenCount++
 		newEvent.Name = event.Name
 		for _, seInput := range standardEvent.Inputs {
-			newInput := Input{Type: seInput.Type, Indexed: seInput.Indexed}
+			newInput := utils.Input{Type: seInput.Type, Indexed: seInput.Indexed}
 			for _, eventInput := range event.Inputs {
 				if standardInput, matched := inputMatch(standardEvent.Inputs, eventInput); matched {
 					totalTokenCount += 2 // Counting the input match and type match...
@@ -290,7 +222,7 @@ func EventMatch(newEvent *Event, standardEvent, event Event) (int, bool) {
 		}
 
 		for _, seOutput := range standardEvent.Outputs {
-			newOutput := Output{Type: seOutput.Type}
+			newOutput := utils.Output{Type: seOutput.Type}
 			for range event.Outputs {
 				for _, fnOutput := range event.Outputs {
 					if _, matched := outputMatch(standardEvent.Outputs, fnOutput); matched {
@@ -308,7 +240,7 @@ func EventMatch(newEvent *Event, standardEvent, event Event) (int, bool) {
 }
 
 // inputMatch matches an input to a list of inputs and returns the matched input and a boolean indicating if a match was found.
-func inputMatch(inputs []Input, nodeInput Input) (*Input, bool) {
+func inputMatch(inputs []utils.Input, nodeInput utils.Input) (*utils.Input, bool) {
 	for _, input := range inputs {
 		if input.Type == nodeInput.Type {
 			return &input, true
@@ -319,7 +251,7 @@ func inputMatch(inputs []Input, nodeInput Input) (*Input, bool) {
 }
 
 // outputMatch matches an output to a list of outputs and returns the matched output and a boolean indicating if a match was found.
-func outputMatch(outputs []Output, nodeOutput Output) (*Output, bool) {
+func outputMatch(outputs []utils.Output, nodeOutput utils.Output) (*utils.Output, bool) {
 	for _, output := range outputs {
 		if output.Type == nodeOutput.Type {
 			return &output, true

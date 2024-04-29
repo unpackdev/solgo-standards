@@ -1,4 +1,4 @@
-package standards
+package utils
 
 import (
 	"fmt"
@@ -9,8 +9,8 @@ import (
 	eip_pb "github.com/unpackdev/protos/dist/go/eip"
 )
 
-// newFunction creates and returns a new Function struct with the provided name, inputs, and outputs.
-func newFunction(name string, inputs []Input, outputs []Output) Function {
+// NewFunction creates and returns a new Function struct with the provided name, inputs, and outputs.
+func NewFunction(name string, inputs []Input, outputs []Output) Function {
 	return Function{
 		Name:    name,
 		Inputs:  inputs,
@@ -18,8 +18,8 @@ func newFunction(name string, inputs []Input, outputs []Output) Function {
 	}
 }
 
-// newEvent creates and returns a new Event struct with the provided name, inputs, and outputs.
-func newEvent(name string, inputs []Input, outputs []Output) Event {
+// NewEvent creates and returns a new Event struct with the provided name, inputs, and outputs.
+func NewEvent(name string, inputs []Input, outputs []Output) Event {
 	return Event{
 		Name:    name,
 		Inputs:  inputs,
