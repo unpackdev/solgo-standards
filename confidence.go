@@ -169,7 +169,7 @@ func FunctionMatch(newFn *utils.Function, standardFunction, contractFunction uti
 		for _, sfnInput := range standardFunction.Inputs {
 			newInput := utils.Input{Type: sfnInput.Type, Indexed: sfnInput.Indexed}
 			for _, fnInput := range contractFunction.Inputs {
-				if standardInput, matched := inputMatch(standardFunction.Inputs, fnInput); matched {
+				if standardInput, matched := InputMatch(standardFunction.Inputs, fnInput); matched {
 					totalTokenCount += 2 // Counting the input match and type match...
 					if standardInput.Indexed == fnInput.Indexed {
 						totalTokenCount++
@@ -185,7 +185,7 @@ func FunctionMatch(newFn *utils.Function, standardFunction, contractFunction uti
 			newOutput := utils.Output{Type: sfnOutput.Type}
 			for range standardFunction.Outputs {
 				for _, fnOutput := range contractFunction.Outputs {
-					if _, matched := outputMatch(standardFunction.Outputs, fnOutput); matched {
+					if _, matched := OutputMatch(standardFunction.Outputs, fnOutput); matched {
 						totalTokenCount += 2 // Counting the input match and type match...
 					}
 					newOutput.Matched = true
@@ -209,7 +209,7 @@ func EventMatch(newEvent *utils.Event, standardEvent, event utils.Event) (int, b
 		for _, seInput := range standardEvent.Inputs {
 			newInput := utils.Input{Type: seInput.Type, Indexed: seInput.Indexed}
 			for _, eventInput := range event.Inputs {
-				if standardInput, matched := inputMatch(standardEvent.Inputs, eventInput); matched {
+				if standardInput, matched := InputMatch(standardEvent.Inputs, eventInput); matched {
 					totalTokenCount += 2 // Counting the input match and type match...
 					if standardInput.Indexed == eventInput.Indexed {
 						totalTokenCount++
@@ -225,7 +225,7 @@ func EventMatch(newEvent *utils.Event, standardEvent, event utils.Event) (int, b
 			newOutput := utils.Output{Type: seOutput.Type}
 			for range event.Outputs {
 				for _, fnOutput := range event.Outputs {
-					if _, matched := outputMatch(standardEvent.Outputs, fnOutput); matched {
+					if _, matched := OutputMatch(standardEvent.Outputs, fnOutput); matched {
 						totalTokenCount += 2 // Counting the input match and type match...
 					}
 					newOutput.Matched = true
@@ -239,8 +239,8 @@ func EventMatch(newEvent *utils.Event, standardEvent, event utils.Event) (int, b
 	return totalTokenCount, totalTokenCount > 0
 }
 
-// inputMatch matches an input to a list of inputs and returns the matched input and a boolean indicating if a match was found.
-func inputMatch(inputs []utils.Input, nodeInput utils.Input) (*utils.Input, bool) {
+// InputMatch matches an input to a list of inputs and returns the matched input and a boolean indicating if a match was found.
+func InputMatch(inputs []utils.Input, nodeInput utils.Input) (*utils.Input, bool) {
 	for _, input := range inputs {
 		if input.Type == nodeInput.Type {
 			return &input, true
@@ -250,8 +250,8 @@ func inputMatch(inputs []utils.Input, nodeInput utils.Input) (*utils.Input, bool
 	return nil, false
 }
 
-// outputMatch matches an output to a list of outputs and returns the matched output and a boolean indicating if a match was found.
-func outputMatch(outputs []utils.Output, nodeOutput utils.Output) (*utils.Output, bool) {
+// OutputMatch matches an output to a list of outputs and returns the matched output and a boolean indicating if a match was found.
+func OutputMatch(outputs []utils.Output, nodeOutput utils.Output) (*utils.Output, bool) {
 	for _, output := range outputs {
 		if output.Type == nodeOutput.Type {
 			return &output, true
